@@ -13,7 +13,7 @@ public class Ghost extends Drawable {
 
     private ArrayList<Direction> availDirections; // Direzioni disponibili
     private final Coordinates initialPosition;
-    private Direction lastDirection;
+    private Direction lastDirection;              //variabile che tiene conto della direzione precedente
 
     public Ghost(Coordinates coords) {
         super(coords);
@@ -21,7 +21,7 @@ public class Ghost extends Drawable {
     }
 
     public void setAvailDirections(ArrayList<Direction> availDirections) {
-        this.availDirections = availDirections;
+        this.availDirections = availDirections;  //prendo le direzioni disponibili
     }
 
     private void move(Direction randomDirection){
@@ -39,17 +39,23 @@ public class Ghost extends Drawable {
     public void update() {
         //genero un numero randomico in base a quante direzioni sono contenute nell'ArrayList e salvo il una variabile la direzione uscita in modo randomico
         Random rand = new Random();
-        Direction randomDirection = availDirections.get(rand.nextInt(availDirections.size()));
+        Direction randomDirection = availDirections.get(rand.nextInt(availDirections.size()));  //sortegio randomicamente una tra le direzioni disponibili in quel momento
 
         if(randomDirection != Direction.getOpposite(lastDirection)){
+            //voglio che la direzione uscita sia diversa dalla direzione opposta alla precedente, senno torna indietro
+
+            move(randomDirection);   //passo a move la direzione che gestirà il movimento del fantsma
+            this.lastDirection = randomDirection;  //imposto la direzione nuova come ultima direzione 
+
+        }else if(availDirections.size() == 1){ 
+            //se il fantasma è in un vicolo chiuso con solo 1 strada disponibile, voglio che si muova dalla parte opposta
+
             move(randomDirection);
             this.lastDirection = randomDirection;
-        }else if(availDirections.size() == 1){
-            move(randomDirection);
+            
         }
 
     }
-
     
     public void resetPosition() {
         coordinates = this.initialPosition;
@@ -62,12 +68,12 @@ public class Ghost extends Drawable {
         //per dare l'idea che i fantasmi stiano lampeggiando
         
         Random rand = new Random();
-        int randomNum = rand.nextInt(4) + 1; //numero casuale da 1 a 4
+        int randomNum = rand.nextInt(4) + 1; //numero casuale da 1 a 4, ogni numero ha una sfumatura diversa
 
         switch(randomNum){
 
             case 1 -> {
-                return new DrawingInformation('G', new Color(0, 191, 255)); // azzurrino 
+                return new DrawingInformation('G', new Color(0, 191, 255)); 
             }
             case 2 -> {
                 return new DrawingInformation('G', new Color(30, 161, 235)); 
